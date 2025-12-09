@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>API Tools Hub — Advanced</title>
+  <style>
+    :root{
+      --bg:#0b1020; --panel:#0f1724; --muted:#94a3b8; --accent:#7c3aed; --success:#10b981; --danger:#ef4444; --glass: rgba(255,255,255,0.03);
+      --radius:12px; --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Segoe UI Mono', monospace;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;color:#e6eef8;background:linear-gradient(180deg,var(--bg),#051023);}
+    .app{max-width:1200px;margin:28px auto;padding:22px;display:grid;grid-template-columns:360px 1fr;gap:18px}
+    header{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+    h1{font-size:20px;margin:0}
+    .top-controls{display:flex;gap:8px;align-items:center}
+    button{background:var(--glass);border:1px solid rgba(255,255,255,0.03);color:inherit;padding:8px 10px;border-radius:10px;cursor:pointer}
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:var(--radius);box-shadow:0 6px 18px rgba(2,6,23,0.6);}
+    .sidebar{display:flex;flex-direction:column;gap:12px}
+    .section-title{font-size:13px;color:var(--muted);margin-bottom:8px}
+
+    /* Request builder */
+    .builder{display:grid;grid-template-columns:1fr;gap:10px}
+    .row{display:flex;gap:8px;align-items:center}
+    label{font-size:13px;color:var(--muted)}
+    input[type=text],select,textarea{width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+    textarea{min-height:120px;font-family:var(--mono);resize:vertical}
+    .methods{display:flex;gap:8px}
+    .methods button{padding:6px 10px}
+    .method-active{background:linear-gradient(90deg,var(--accent),#5b21b6);border:none}
+
+    .headers{max-height:160px;overflow:auto}
+    .kv{display:flex;gap:8px;margin-bottom:8px}
+    .kv input{flex:1}
+    .kv .kv-del{width:36px}
+
+    /* Response */
+    .response{display:grid;grid-template-columns:1fr 360px;gap:12px}
+    .resp-main{min-height:300px}
+    pre{background:#071423;padding:12px;border-radius:10px;overflow:auto;color:#cfeaff}
+    .meta{display:flex;gap:12px;align-items:center;font-size:13px;color:var(--muted);margin-bottom:8px}
+    .small{font-size:12px;color:var(--muted)}
+
+    /* list */
+    .list{display:flex;flex-direction:column;gap:8px}
+    .list button{display:flex;justify-content:space-between;align-items:center}
+
+    /* footer */
+    footer{grid-column:1/-1;margin-top:12px;color:var(--muted);font-size:13px}
+
+    /* responsive */
+    @media(max-width:980px){.app{grid-template-columns:1fr;}.response{grid-template-columns:1fr}.sidebar{order:2}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div>
+        <h1>API Tools Hub — Advanced</h1>
+        <div class="small">Powerful API requester · headers · saved keys · history · pretty JSON</div>
+      </div>
+      <div class="top-controls">
+        <button id="toggleTheme">Toggle Theme</button>
+        <button id="exportAll">Export Favorites</button>
+        <button id="importBtn">Import</button>
+      </div>
+    </header>
+
+    <aside class="sidebar panel">
+      <div>
+        <div class="section-title">Request Builder</div>
+        <div class="builder">
+          <div class="row">
+            <select id="method">
+              <option>GET</option>
+              <option>POST</option>
+              <option>PUT</option>
+              <option>PATCH</option>
+              <option>DELETE</option>
+            </select>
+            <input id="url" type="text" placeholder="https://api.example.com/path?query=1" />
+            <button id="send">Send</button>
+          </div>
+
+          <div>
+            <label class="small">Headers <span id="authLabel" class="small" style="margin-left:8px;color:var(--muted)"></span></label>
+            <div class="headers" id="headersList"></div>
+            <div style="display:flex;gap:8px;margin-top:6px">
+              <button id="addHeader">+ Header</button>
+              <select id="savedKeysSelect"><option value="">Use saved key...</option></select>
+              <button id="saveKeyBtn">Save Key</button>
+            </div>
+          </div>
+
+          <div>
+            <label class="small">Body (JSON)</label>
+            <textarea id="body" placeholder='{"name": "value"}'></textarea>
+            <div style="display:flex;gap:8px;margin-top:6px">
+              <button id="prettyBody">Format JSON</button>
+              <button id="clearBody">Clear</button>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:8px;justify-content:space-between;align-items:center">
+            <div style="display:flex;gap:8px">
+              <button id="saveFav">⭐ Save Favorite</button>
+              <button id="historyBtn">History</button>
+            </div>
+            <div class="small">Tip: CORS may block cross-origin requests in browser.</div>
+          </div>
+        </div>
+      </div>
+
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0" />
+
+      <div>
+        <div class="section-title">Favorites</div>
+        <div class="list" id="favorites"></div>
+      </div>
+
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0" />
+
+      <div>
+        <div class="section-title">Saved API Keys</div>
+        <div id="keysList" class="list"></div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <input id="keyName" placeholder="Key name" />
+          <input id="keyValue" placeholder="Key value" />
+        </div>
+      </div>
+    </aside>
+
+    <main class="panel">
+      <div class="response">
+        <div class="resp-main">
+          <div class="meta">
+            <div class="small" id="status">Status: -</div>
+            <div class="small" id="time">Time: -</div>
+            <div class="small" id="size">Size: -</div>
+            <div style="margin-left:auto"><button id="copyResp">Copy Response</button></div>
+          </div>
+          <pre id="responseRaw">{"message":"Send a request to see response"}</pre>
+        </div>
+
+        <aside style="min-width:260px">
+          <div class="section-title">History</div>
+          <div id="history" class="list" style="max-height:260px;overflow:auto"></div>
+
+          <div style="height:12px"></div>
+
+          <div class="section-title">Response Preview</div>
+          <div id="responsePreview" style="min-height:120px;padding:10px;border-radius:8px;background:#061022;color:var(--muted);font-family:var(--mono);overflow:auto">No preview</div>
+        </aside>
+      </div>
+
+      <div style="margin-top:12px">
+        <div class="section-title">Raw Tools</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button id="clearAll">Clear History</button>
+          <button id="clearFavs">Clear Favorites</button>
+          <button id="downloadResp">Download Last Response</button>
+        </div>
+      </div>
+
+    </main>
+
+    <footer>
+      <div>Built with ❤️ — Open in browser (index.html). Note: browser CORS may block some requests; use a CORS proxy or run locally with a small proxy for full functionality.</div>
+    </footer>
+  </div>
+
+  <input type="file" id="importFile" accept="application/json" style="display:none" />
+
+  <script>
+    // --- helper utils ---
+    const $ = id => document.getElementById(id)
+    const now = () => Date.now()
+    const humanSize = bytes => {
+      if(!bytes) return '-'
+      const units=['B','KB','MB','GB']
+      let i=0
+      while(bytes>=1024 && i<units.length-1){bytes/=1024;i++}
+      return bytes.toFixed(2)+units[i]
+    }
+
+    // --- state ---
+    let lastResponse = null
+    let favorites = JSON.parse(localStorage.getItem('ath_favs')||'[]')
+    let history = JSON.parse(localStorage.getItem('ath_hist')||'[]')
+    let keys = JSON.parse(localStorage.getItem('ath_keys')||'[]')
+
+    // --- init ---
+    function init(){
+      renderFavs(); renderHist(); renderKeys(); renderSavedKeysSelect();
+      // default header
+      addHeaderRow('Accept','application/json')
+      addHeaderRow('Content-Type','application/json')
+
+      attachEvents()
+    }
+
+    // --- headers editor ---
+    function addHeaderRow(k='',v=''){
+      const id = 'h_'+Math.random().toString(36).slice(2,9)
+      const div = document.createElement('div');div.className='kv';div.dataset.id=id
+      div.innerHTML = `<input placeholder="Key" class="hkey" value="${escapeHtml(k)}"><input placeholder="Value" class="hval" value="${escapeHtml(v)}"><button class="kv-del">✖</button>`
+      $('headersList').appendChild(div)
+      div.querySelector('.kv-del').addEventListener('click', ()=>{div.remove()})
+      return div
+    }
+
+    function collectHeaders(){
+      const out = {}
+      document.querySelectorAll('#headersList .kv').forEach(div=>{
+        const k = div.querySelector('.hkey').value.trim()
+        const v = div.querySelector('.hval').value
+        if(k) out[k]=v
+      })
+      return out
+    }
+
+    // --- events ---
+    function attachEvents(){
+      $('addHeader').addEventListener('click', ()=>addHeaderRow())
+      $('send').addEventListener('click', sendRequest)
+      $('prettyBody').addEventListener('click', formatBody)
+      $('clearBody').addEventListener('click', ()=>$('body').value='')
+      $('saveFav').addEventListener('click', saveFavorite)
+      $('historyBtn').addEventListener('click', ()=>alert('History panel on the right shows saved requests.'))
+      $('clearAll').addEventListener('click', ()=>{if(confirm('Clear history?')){history=[];persistHist();renderHist()}})
+      $('clearFavs').addEventListener('click', ()=>{if(confirm('Clear favorites?')){favorites=[];persistFavs();renderFavs()}})
+      $('copyResp').addEventListener('click', ()=>{navigator.clipboard.writeText(lastResponse?JSON.stringify(lastResponse,null,2):$('responseRaw').innerText).then(()=>alert('Copied'))})
+      $('downloadResp').addEventListener('click', downloadLastResponse)
+      $('saveKeyBtn').addEventListener('click', saveKeyFromInputs)
+      $('exportAll').addEventListener('click', exportFavorites)
+      $('importBtn').addEventListener('click', ()=>$('importFile').click())
+      $('importFile').addEventListener('change', importFile)
+      $('savedKeysSelect').addEventListener('change', ()=>{
+        const val = $('savedKeysSelect').value
+        if(!val) return
+        const k = keys.find(i=>i.id===val)
+        if(k){
+          // set Authorization header automatically
+          // find existing Authorization header
+          let found=false
+          document.querySelectorAll('#headersList .kv').forEach(div=>{
+            const hk = div.querySelector('.hkey')
+            if(hk.value.toLowerCase()==='authorization'){div.querySelector('.hval').value=k.value;found=true}
+          })
+          if(!found) addHeaderRow('Authorization', k.value)
+        }
+      })
+      $('toggleTheme').addEventListener('click', toggleTheme)
+
+      // keyboard shortcut: Ctrl+Enter to send
+      document.addEventListener('keydown',(e)=>{if(e.ctrlKey && e.key==='Enter'){sendRequest()}})
+    }
+
+    // --- send request ---
+    async function sendRequest(){
+      const method = $('method').value
+      const url = $('url').value.trim()
+      if(!url){alert('Enter URL');return}
+      const headers = collectHeaders()
+      let body = $('body').value.trim()
+      let fetchBody = undefined
+      if(body){
+        try{fetchBody = JSON.parse(body)}catch(e){if(['GET','DELETE'].includes(method)){fetchBody = body}else{if(!confirm('Body is not valid JSON. Send raw?')) return}}
+      }
+
+      // prepare fetch options
+      const opts = {method, headers: headers}
+      if(!['GET','HEAD'].includes(method) && body!=='') opts.body = (typeof fetchBody==='string'?fetchBody:JSON.stringify(fetchBody))
+
+      // request info
+      const t0 = now()
+      $('status').innerText='Status: ...'
+      $('time').innerText='Time: ...'
+      $('size').innerText='Size: ...'
+      try{
+        const r = await fetch(url, opts)
+        const t1 = now()
+        const took = t1 - t0
+        const contentType = r.headers.get('content-type')||''
+        const statusTxt = `Status: ${r.status} ${r.statusText}`
+        $('status').innerText = statusTxt
+        $('time').innerText = `Time: ${took} ms`
+
+        let text = await r.text()
+        // update size
+        $('size').innerText = 'Size: '+humanSize(new TextEncoder().encode(text).length)
+
+        // try parse JSON
+        try{ lastResponse = JSON.parse(text); $('responseRaw').innerText = JSON.stringify(lastResponse, null, 2); $('responsePreview').innerText = prettyPreview(lastResponse)}catch(e){ lastResponse = text; $('responseRaw').innerText = text; $('responsePreview').innerText = text }
+
+        // save to history
+        const rec = {id:Date.now()+Math.random().toString(36).slice(2,5), url, method, headers, body: $('body').value, time:took, status:r.status}
+        history.unshift(rec); if(history.length>60) history.pop(); persistHist(); renderHist()
+
+      }catch(err){
+        $('status').innerText = 'Error'
+        $('responseRaw').innerText = 'Request failed — likely CORS or network error. Check console.'
+        $('responsePreview').innerText = String(err)
+        console.error(err)
+      }
+    }
+
+    function prettyPreview(obj){
+      if(typeof obj==='string') return obj
+      if(obj && typeof obj==='object'){
+        // show top-level keys and types
+        const keys = Object.keys(obj).slice(0,50)
+        return keys.map(k=>`${k}: ${typeof obj[k]}`).join('\n')
+      }
+      return String(obj)
+    }
+
+    // --- history/favorites ---
+    function persistFavs(){localStorage.setItem('ath_favs', JSON.stringify(favorites))}
+    function persistHist(){localStorage.setItem('ath_hist', JSON.stringify(history))}
+    function persistKeys(){localStorage.setItem('ath_keys', JSON.stringify(keys)); renderKeys(); renderSavedKeysSelect()}
+
+    function renderFavs(){
+      const wrap = $('favorites'); wrap.innerHTML=''
+      if(!favorites.length) {wrap.innerHTML='<div class="small">No favorites yet</div>';return}
+      favorites.forEach(f=>{
+        const b=document.createElement('button');b.innerHTML=`<div style="text-align:left"><strong>${escapeHtml(f.name)}</strong><div class="small">${escapeHtml(f.method)} ${escapeHtml(f.url)}</div></div><div class="small">▶</div>`
+        b.addEventListener('click', ()=>{applySavedRequest(f)})
+        const del = document.createElement('button');del.textContent='✖';del.style.marginLeft='6px';del.addEventListener('click',(e)=>{e.stopPropagation(); if(confirm('Delete favorite?')){favorites=favorites.filter(x=>x.id!==f.id);persistFavs();renderFavs()}})
+        const row = document.createElement('div');row.style.display='flex';row.style.justifyContent='space-between';row.appendChild(b);row.appendChild(del)
+        wrap.appendChild(row)
+      })
+    }
+
+    function saveFavorite(){
+      const name = prompt('Favorite name')
+      if(!name) return
+      const fav = {id:Date.now()+Math.random().toString(36).slice(2,5), name, url:$('url').value, method:$('method').value, headers:collectHeaders(), body:$('body').value}
+      favorites.unshift(fav); if(favorites.length>40) favorites.pop(); persistFavs(); renderFavs(); alert('Saved')
+    }
+
+    function applySavedRequest(f){
+      $('url').value = f.url; $('method').value = f.method; $('body').value = f.body||''
+      // replace headers
+      $('headersList').innerHTML=''
+      for(const k in f.headers) addHeaderRow(k,f.headers[k])
+    }
+
+    function renderHist(){ const wrap=$('history'); wrap.innerHTML=''; if(!history.length){wrap.innerHTML='<div class="small">No history</div>';return} history.slice(0,60).forEach(h=>{const b=document.createElement('button');b.textContent = `${h.method} ${h.url} · ${h.time}ms · ${h.status||'-'}`; b.addEventListener('click',()=>{applyHistory(h)});wrap.appendChild(b)}) }
+    function applyHistory(h){ $('url').value=h.url; $('method').value=h.method; $('body').value=h.body||''; $('headersList').innerHTML=''; for(const k in h.headers) addHeaderRow(k,h.headers[k]) }
+
+    // --- keys ---
+    function saveKeyFromInputs(){ const name = $('keyName').value.trim(); const val = $('keyValue').value.trim(); if(!name||!val){alert('Enter name & value');return} const rec={id:Date.now()+Math.random().toString(36).slice(2,5),name, value: val}; keys.unshift(rec); if(keys.length>40) keys.pop(); persistKeys(); $('keyName').value=''; $('keyValue').value=''; }
+    function renderKeys(){ const wrap=$('keysList'); wrap.innerHTML=''; if(!keys.length){wrap.innerHTML='<div class="small">No saved keys</div>';return} keys.forEach(k=>{ const row=document.createElement('div'); row.style.display='flex'; row.style.justifyContent='space-between'; row.innerHTML=`<div style="text-align:left"><strong>${escapeHtml(k.name)}</strong><div class="small">${escapeHtml(k.value.slice(0,40))}${k.value.length>40?'...':''}</div></div>`; const use=document.createElement('button'); use.textContent='Use'; use.addEventListener('click',()=>{applyKey(k)}); const del=document.createElement('button'); del.textContent='Del'; del.addEventListener('click',()=>{if(confirm('Delete key?')){keys=keys.filter(x=>x.id!==k.id);persistKeys()}}); row.appendChild(use); row.appendChild(del); wrap.appendChild(row) }) }
+    function applyKey(k){ // set as Authorization header
+      let found=false
+      document.querySelectorAll('#headersList .kv').forEach(div=>{const hk=div.querySelector('.hkey'); if(hk.value.toLowerCase()==='authorization'){div.querySelector('.hval').value=k.value;found=true}})
+      if(!found) addHeaderRow('Authorization', k.value)
+    }
+    function renderSavedKeysSelect(){ const sel=$('savedKeysSelect'); sel.innerHTML='<option value="">Use saved key...</option>'; keys.forEach(k=>{ const opt=document.createElement('option'); opt.value=k.id; opt.textContent=k.name; sel.appendChild(opt) }) }
+
+    // --- utils & extras ---
+    function formatBody(){ try{ const j=JSON.parse($('body').value); $('body').value = JSON.stringify(j,null,2); }catch(e){ alert('Invalid JSON') } }
+    function downloadLastResponse(){ if(!lastResponse){alert('No response');return} const blob = new Blob([typeof lastResponse==='string'?lastResponse:JSON.stringify(lastResponse,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='response.json'; a.click(); }
+
+    function exportFavorites(){ const data = {favorites, keys}; const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='ath-export.json'; a.click(); }
+    function importFile(e){ const f = e.target.files[0]; if(!f) return; const reader=new FileReader(); reader.onload = ()=>{ try{ const obj=JSON.parse(reader.result); if(obj.favorites) favorites=obj.favorites; if(obj.keys) keys=obj.keys; persistFavs(); persistKeys(); renderFavs(); renderKeys(); renderSavedKeysSelect(); alert('Imported') }catch(err){alert('Invalid file') } }; reader.readAsText(f); }
+
+    function saveFavoriteFromObj(obj){ favorites.unshift(obj); persistFavs(); renderFavs() }
+
+    function applySavedRequestSimple(obj){ $('url').value=obj.url; $('method').value=obj.method; $('body').value=obj.body||'' }
+
+    function toggleTheme(){ document.body.classList.toggle('light') }
+
+    function escapeHtml(s){ if(!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+
+    function download(filename, text){ const a=document.createElement('a'); a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(text); a.download=filename; a.click(); }
+
+    // init
+    init()
+  </script>
+</body>
+</html>
