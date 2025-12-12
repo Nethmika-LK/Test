@@ -3,277 +3,174 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>lovely — Nethmika ❤️ Shalani</title>
   <style>
     :root{
       --bg:#fff0f6; --card:#ffffff; --accent:#ff6fb5; --muted:#8b6a78;
     }
-    *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial}
-    body{margin:0;background:linear-gradient(135deg,var(--bg),#fff6f9);color:#401828}
-    header{padding:28px 20px;text-align:center}
-    .title{font-size:26px;letter-spacing:0.6px}
-    .subtitle{color:var(--muted);margin-top:6px}
-    .wrap{max-width:980px;margin:18px auto;padding:18px}.top-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center}
-.card{background:var(--card);border-radius:14px;padding:16px;box-shadow:0 6px 18px rgba(181,95,141,0.12);min-width:260px}
+    *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI}
+    body{margin:0;background:var(--bg);color:#401828;padding:0}header{text-align:center;padding:20px 10px}
+.title{font-size:22px;font-weight:600}
+.subtitle{font-size:13px;color:var(--muted)}
 
-nav{display:flex;gap:8px;justify-content:center;margin-bottom:16px}
-nav button{border:0;background:transparent;padding:8px 12px;border-radius:10px;cursor:pointer}
-nav button.active{background:linear-gradient(90deg,var(--accent),#ff9ccf);color:white}
+.wrap{padding:10px}
 
-/* diary */
-.diary-list{max-height:260px;overflow:auto;margin-top:10px}
-.note{padding:10px;border-radius:10px;margin-bottom:10px;background:linear-gradient(180deg,rgba(255,241,247,0.6),rgba(255,246,249,0.6));}
-.note time{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}
+nav{display:flex;overflow-x:auto;gap:6px;padding-bottom:8px}
+nav button{flex:0 0 auto;padding:8px 12px;border-radius:12px;border:0;background:#ffe1ef;font-size:13px}
+nav button.active{background:var(--accent);color:white}
 
-/* gallery */
-.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
-.thumb{width:100%;height:90px;object-fit:cover;border-radius:10px}
+.card{background:var(--card);border-radius:14px;padding:14px;margin-top:10px;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+h3{margin:0 0 10px 0;font-size:18px}
 
-/* countdown */
+textarea, input{width:100%;padding:10px;border-radius:10px;border:1px solid #ffdbe9;font-size:14px}
+
+.note{padding:10px;border-radius:10px;margin-bottom:10px;background:#fff6fb;font-size:14px}
+.note time{font-size:11px;color:var(--muted)}
+
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
+.thumb{width:100%;height:80px;object-fit:cover;border-radius:8px}
+
 .countdown-list{display:flex;flex-direction:column;gap:8px}
-.countdown-item{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:#fff6fb}
+.countdown-item{padding:10px;border-radius:10px;background:#fff6fb;font-size:14px}
 
-/* mood */
-.moods{display:flex;gap:8px}
-.mood-btn{padding:10px 12px;border-radius:12px;border:0;background:#fff;cursor:pointer}
+.moods{display:flex;gap:6px;flex-wrap:wrap}
+.mood-btn{flex:1;padding:10px;border-radius:10px;background:#fff;border:1px solid #ffdbe9;font-size:14px}
 
-/* secret */
-.secret-box{display:flex;flex-direction:column;gap:8px}
-.small{font-size:13px;color:var(--muted)}
-
-footer{padding:20px;text-align:center;color:var(--muted)}
-
-/* responsive */
-@media(min-width:880px){.top-row{justify-content:space-between}}
-
-/* cute hearts */
-.logo{display:inline-flex;align-items:center;gap:10px}
-.heart{width:32px;height:32px;border-radius:8px;display:inline-grid;place-items:center;background:linear-gradient(180deg,#ff9ccf,#ff6fb5);color:white;box-shadow:0 6px 18px rgba(255,111,181,0.18)}
+footer{text-align:center;padding:20px;font-size:13px;color:var(--muted)}
 
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo">
-      <div class="heart">❤</div>
-      <div>
-        <div class="title">lovely — Nethmika ❤️ Shalani</div>
-        <div class="subtitle">A private space just for the two of you · Hosted on GitHub Pages</div>
-      </div>
+<header>
+  <div class="title">lovely — Nethmika ❤️ Shalani</div>
+  <div class="subtitle">A private couple space (Mobile Optimized)</div>
+</header><div class="wrap">
+  <nav>
+    <button class="tab-btn active" data-tab="diary">Diary</button>
+    <button class="tab-btn" data-tab="gallery">Gallery</button>
+    <button class="tab-btn" data-tab="countdown">Countdown</button>
+    <button class="tab-btn" data-tab="mood">Mood</button>
+    <button class="tab-btn" data-tab="secret">Secret</button>
+  </nav>  <section id="diary" class="card panel">
+    <h3>Love Diary</h3>
+    <textarea id="diary-text" placeholder="Write something..."></textarea>
+    <input id="diary-name" placeholder="From" style="margin-top:6px" />
+    <button id="save-diary" style="margin-top:10px;padding:10px;border:0;width:100%;border-radius:10px;background:var(--accent);color:white">Save</button>
+    <div id="diary-list" style="margin-top:14px"></div>
+  </section>  <section id="gallery" class="card panel" style="display:none">
+    <h3>Gallery</h3>
+    <input type="file" id="photo-input" accept="image/*" multiple />
+    <div id="gallery-grid" class="gallery-grid"></div>
+  </section>  <section id="countdown" class="card panel" style="display:none">
+    <h3>Countdowns</h3>
+    <input id="count-title" placeholder="Event name" />
+    <input id="count-date" type="date" style="margin-top:6px" />
+    <button id="add-count" style="margin-top:10px;padding:10px;border:0;width:100%;border-radius:10px;background:var(--accent);color:white">Add</button>
+    <div id="count-list" class="countdown-list" style="margin-top:12px"></div>
+  </section>  <section id="mood" class="card panel" style="display:none">
+    <h3>Mood Tracker</h3>
+    <div class="moods">
+      <button class="mood-btn" data-mood="Love">😍 Love</button>
+      <button class="mood-btn" data-mood="Happy">😊 Happy</button>
+      <button class="mood-btn" data-mood="Okay">😐 Okay</button>
+      <button class="mood-btn" data-mood="Sad">😢 Sad</button>
     </div>
-  </header>  <main class="wrap">
-    <nav>
-      <button class="tab-btn active" data-tab="diary">Love Diary</button>
-      <button class="tab-btn" data-tab="gallery">Memory Gallery</button>
-      <button class="tab-btn" data-tab="countdown">Countdowns</button>
-      <button class="tab-btn" data-tab="mood">Mood Tracker</button>
-      <button class="tab-btn" data-tab="secret">Secret Box</button>
-      <button class="tab-btn" data-tab="about">About</button>
-    </nav><section id="diary" class="card panel">
-  <h3>Love Diary</h3>
-  <form id="diary-form" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
-    <textarea id="diary-text" placeholder="Write something sweet to Shalani..." style="flex:1;min-height:70px;border-radius:10px;padding:10px;border:1px solid #ffdbe9"></textarea>
-    <div style="display:flex;flex-direction:column;gap:8px">
-      <input id="diary-name" placeholder="From (optional)" style="padding:8px;border-radius:8px;border:1px solid #ffdbe9" />
-      <button type="submit" style="padding:10px 14px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent),#ff9ccf);color:white;cursor:pointer">Save</button>
-    </div>
-  </form>
-  <div class="diary-list" id="diary-list" aria-live="polite"></div>
-</section>
+    <div id="mood-history" style="margin-top:12px"></div>
+  </section>  <section id="secret" class="card panel" style="display:none">
+    <h3>Secret Box</h3>
+    <textarea id="secret-text" placeholder="Secret message..."></textarea>
+    <input id="secret-pass" placeholder="Password" style="margin-top:6px" />
+    <button id="save-secret" style="margin-top:10px;padding:10px;width:100%;border-radius:10px;border:0;background:var(--accent);color:white">Save</button>
+    <button id="open-secret" style="margin-top:6px;padding:10px;width:100%;border-radius:10px;border:1px solid var(--accent);background:transparent">Open</button>
+    <div id="secret-output" style="margin-top:10px;font-size:14px;color:var(--muted)"></div>
+  </section>
+</div><footer>Made for Shalani ❤</footer><script>
+const KEY='lovely_mob_';
+function esc(t){return t.replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[m]))}
 
-<section id="gallery" class="card panel" style="display:none">
-  <h3>Memory Gallery</h3>
-  <div class="small">Add photos (stored locally in your browser). For longer-term hosting, upload to repo or use external image links.</div>
-  <input id="photo-input" type="file" accept="image/*" style="margin-top:10px" multiple />
-  <div class="gallery-grid" id="gallery-grid" style="margin-top:12px"></div>
-</section>
+// Tabs
+const tabs=document.querySelectorAll('.tab-btn');
+tabs.forEach(b=>b.onclick=()=>{
+  tabs.forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.style.display='none');
+  document.getElementById(b.dataset.tab).style.display='block';
+});
 
-<section id="countdown" class="card panel" style="display:none">
-  <h3>Countdowns</h3>
-  <form id="count-form" style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-    <input id="count-title" placeholder="Event name (eg. Anniversary)" style="flex:1;padding:8px;border-radius:8px;border:1px solid #ffdbe9" />
-    <input id="count-date" type="date" style="padding:8px;border-radius:8px;border:1px solid #ffdbe9" />
-    <button type="submit" style="padding:10px 14px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent),#ff9ccf);color:white;cursor:pointer">Add</button>
-  </form>
-  <div class="countdown-list" id="count-list" style="margin-top:12px"></div>
-</section>
+// Diary
+function loadDiary(){
+  const d=JSON.parse(localStorage.getItem(KEY+'diary')||'[]');
+  diaryList.innerHTML=d.map(x=>`<div class='note'><time>${new Date(x.t).toLocaleString()}</time>${esc(x.txt)}<br><small>— ${esc(x.from||'You')}</small></div>`).join('');
+}
+saveDiary.onclick=()=>{
+  if(!diaryText.value.trim()) return alert('Write something');
+  const d=JSON.parse(localStorage.getItem(KEY+'diary')||'[]');
+  d.unshift({t:Date.now(),txt:diaryText.value,from:diaryName.value});
+  localStorage.setItem(KEY+'diary',JSON.stringify(d));
+  diaryText.value='';diaryName.value='';loadDiary();
+};
+loadDiary();
 
-<section id="mood" class="card panel" style="display:none">
-  <h3>Mood Tracker</h3>
-  <div class="small">Tap a mood to save how you feel today.</div>
-  <div style="margin-top:10px" class="moods">
-    <button class="mood-btn" data-mood="Love">😍 Love</button>
-    <button class="mood-btn" data-mood="Happy">😊 Happy</button>
-    <button class="mood-btn" data-mood="Neutral">😐 Okay</button>
-    <button class="mood-btn" data-mood="Sad">😢 Sad</button>
-  </div>
-  <div style="margin-top:12px" id="mood-history"></div>
-</section>
-
-<section id="secret" class="card panel" style="display:none">
-  <h3>Secret Box</h3>
-  <div class="small">Write a secret message for Shalani. Protect it with a password — only someone who knows the password can read it.</div>
-  <div class="secret-box" style="margin-top:10px">
-    <textarea id="secret-text" placeholder="Type your secret message..." style="min-height:80px;padding:10px;border-radius:8px;border:1px solid #ffdbe9"></textarea>
-    <input id="secret-pass" placeholder="Set a password to lock this" style="padding:8px;border-radius:8px;border:1px solid #ffdbe9" />
-    <div style="display:flex;gap:8px">
-      <button id="save-secret" style="padding:10px;border-radius:8px;border:0;background:linear-gradient(90deg,var(--accent),#ff9ccf);color:white;cursor:pointer">Save Secret</button>
-      <button id="open-secret" style="padding:10px;border-radius:8px;border:1px solid #ff9ccf;background:transparent;cursor:pointer">Open Secret</button>
-    </div>
-    <div id="secret-output" style="margin-top:10px;color:var(--muted)"></div>
-  </div>
-</section>
-
-<section id="about" class="card panel" style="display:none">
-  <h3>About</h3>
-  <p class="small">This is a private, static web app made for <strong>Shalani</strong> and <strong>Nethmika</strong>. It uses your browser's local storage — nothing is sent to any server. To host this page publicly, put the included <code>index.html</code> into a GitHub repository and enable GitHub Pages (branch: main / root).</p>
-  <p class="small">Want live chat or cloud syncing? I can add an optional server or Firebase later if you want.</p>
-</section>
-
-  </main>  <footer>
-    <small>lovely · Made with ❤ for Shalani</small>
-  </footer><script>
-(function(){
-  const SITE_KEY = 'lovely_v1_';
-  // Tabs
-  document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.panel').forEach(p=>p.style.display='none');
-    document.getElementById(btn.dataset.tab).style.display='block';
-  }));
-
-  // Diary
-  const diaryForm = document.getElementById('diary-form');
-  const diaryList = document.getElementById('diary-list');
-  function loadDiary(){
-    const items = JSON.parse(localStorage.getItem(SITE_KEY+'diary')||'[]');
-    diaryList.innerHTML = items.map(it=>`<div class="note"><time>${new Date(it.t).toLocaleString()}</time><div>${escapeHtml(it.text)}</div><div style="margin-top:6px;font-size:12px;color:var(--muted)">— ${escapeHtml(it.from||'You')}</div></div>`).join('')
+// Gallery
+function loadGal(){
+  const g=JSON.parse(localStorage.getItem(KEY+'gal')||'[]');
+  galleryGrid.innerHTML=g.map(x=>`<img class='thumb' src='${x}'/>`).join('');
+}
+photoInput.onchange=async()=>{
+  const g=JSON.parse(localStorage.getItem(KEY+'gal')||'[]');
+  for(const f of photoInput.files){
+    const r=new FileReader();
+    r.onload=e=>{g.unshift(e.target.result);localStorage.setItem(KEY+'gal',JSON.stringify(g));loadGal();};
+    r.readAsDataURL(f);
   }
-  diaryForm.addEventListener('submit',e=>{
-    e.preventDefault();
-    const text = document.getElementById('diary-text').value.trim();
-    const from = document.getElementById('diary-name').value.trim();
-    if(!text) return alert('Please write something first.');
-    const items = JSON.parse(localStorage.getItem(SITE_KEY+'diary')||'[]');
-    items.unshift({t:Date.now(),text,from});
-    localStorage.setItem(SITE_KEY+'diary',JSON.stringify(items));
-    document.getElementById('diary-text').value='';document.getElementById('diary-name').value='';
-    loadDiary();
-  });
-  loadDiary();
+  photoInput.value='';
+};
+loadGal();
 
-  // Gallery
-  const photoInput = document.getElementById('photo-input');
-  const galleryGrid = document.getElementById('gallery-grid');
-  function loadGallery(){
-    const pics = JSON.parse(localStorage.getItem(SITE_KEY+'pics')||'[]');
-    galleryGrid.innerHTML = pics.map((p,idx)=>`<img src="${p}" class="thumb" data-idx="${idx}" onclick="window.open('${p}','_blank')"/>`).join('')
-  }
-  photoInput.addEventListener('change',async e=>{
-    const files = Array.from(e.target.files);
-    if(!files.length) return;
-    const pics = JSON.parse(localStorage.getItem(SITE_KEY+'pics')||'[]');
-    for(const f of files){
-      if(!f.type.startsWith('image/')) continue;
-      const data = await fileToBase64(f);
-      pics.unshift(data);
-      if(pics.length>40) pics.pop();
-    }
-    localStorage.setItem(SITE_KEY+'pics',JSON.stringify(pics));
-    photoInput.value='';
-    loadGallery();
-  });
-  loadGallery();
+// Countdowns
+function loadCnt(){
+  const c=JSON.parse(localStorage.getItem(KEY+'cnt')||'[]');
+  countList.innerHTML=c.map(x=>{
+    const days=Math.ceil((new Date(x.date)-new Date())/86400000);
+    return `<div class='countdown-item'><strong>${esc(x.title)}</strong> — ${days} days</div>`;
+  }).join('');
+}
+addCount.onclick=()=>{
+  if(!countTitle.value||!countDate.value) return alert('Fill both');
+  const c=JSON.parse(localStorage.getItem(KEY+'cnt')||'[]');
+  c.unshift({title:countTitle.value,date:countDate.value});
+  localStorage.setItem(KEY+'cnt',JSON.stringify(c));
+  countTitle.value='';countDate.value='';loadCnt();
+};
+loadCnt();
 
-  // Countdowns
-  const countForm = document.getElementById('count-form');
-  const countList = document.getElementById('count-list');
-  function renderCounts(){
-    const items = JSON.parse(localStorage.getItem(SITE_KEY+'counts')||'[]');
-    if(!items.length) countList.innerHTML='<div class="small">No countdowns yet — add one!</div>';
-    else{
-      countList.innerHTML = items.map((c,idx)=>{
-        const diff = new Date(c.date) - new Date();
-        const days = Math.ceil(diff/86400000);
-        return `<div class="countdown-item"><div><strong>${escapeHtml(c.title)}</strong><div class="small">${c.date}</div></div><div>${days>=0?days+' days':'Passed' } <button data-idx="${idx}" class="del-btn" style="margin-left:8px;border:0;background:transparent;cursor:pointer">✖</button></div></div>`
-      }).join('')
-    }
-  }
-  countForm.addEventListener('submit',e=>{
-    e.preventDefault();
-    const title = document.getElementById('count-title').value.trim();
-    const date = document.getElementById('count-date').value;
-    if(!title||!date) return alert('Add title and date');
-    const items = JSON.parse(localStorage.getItem(SITE_KEY+'counts')||'[]');
-    items.unshift({title,date});
-    localStorage.setItem(SITE_KEY+'counts',JSON.stringify(items));
-    document.getElementById('count-title').value='';document.getElementById('count-date').value='';
-    renderCounts();
-  });
-  countList.addEventListener('click',e=>{
-    if(e.target.classList.contains('del-btn')){
-      const idx = Number(e.target.dataset.idx);
-      const items = JSON.parse(localStorage.getItem(SITE_KEY+'counts')||'[]');
-      items.splice(idx,1);
-      localStorage.setItem(SITE_KEY+'counts',JSON.stringify(items));
-      renderCounts();
-    }
-  });
-  renderCounts();
-  setInterval(renderCounts,60000);
+// Mood
+function loadMood(){
+  const m=JSON.parse(localStorage.getItem(KEY+'moods')||'[]');
+  moodHistory.innerHTML=m.map(x=>`<div>${x.t} — ${x.m}</div>`).join('');
+}
+document.querySelectorAll('.mood-btn').forEach(btn=>btn.onclick=()=>{
+  const m=JSON.parse(localStorage.getItem(KEY+'moods')||'[]');
+  m.unshift({t:new Date().toLocaleDateString(),m:btn.dataset.mood});
+  localStorage.setItem(KEY+'moods',JSON.stringify(m));
+  loadMood();
+});
+loadMood();
 
-  // Mood tracker
-  const moodHistory = document.getElementById('mood-history');
-  document.querySelectorAll('.mood-btn').forEach(b=>b.addEventListener('click',()=>{
-    const mood = b.dataset.mood;
-    const items = JSON.parse(localStorage.getItem(SITE_KEY+'moods')||'[]');
-    items.unshift({mood,t:Date.now()});
-    localStorage.setItem(SITE_KEY+'moods',JSON.stringify(items));
-    renderMoods();
-  }));
-  function renderMoods(){
-    const items = JSON.parse(localStorage.getItem(SITE_KEY+'moods')||'[]');
-    moodHistory.innerHTML = items.slice(0,8).map(it=>`<div class="note"><time>${new Date(it.t).toLocaleDateString()}</time>${escapeHtml(it.mood)}</div>`).join('') || '<div class="small">No moods yet</div>'
-  }
-  renderMoods();
-
-  // Secret box (simple reversible obfuscation using XOR with password)
-  function xorCrypt(str,p){
-    let out='';
-    for(let i=0;i<str.length;i++){ out += String.fromCharCode(str.charCodeAt(i) ^ p.charCodeAt(i % p.length)); }
-    return out;
-  }
-  document.getElementById('save-secret').addEventListener('click',()=>{
-    const text = document.getElementById('secret-text').value.trim();
-    const pass = document.getElementById('secret-pass').value;
-    if(!text||!pass) return alert('Type a message and set a password');
-    const enc = btoa(unescape(encodeURIComponent(xorCrypt(text,pass))));
-    localStorage.setItem(SITE_KEY+'secret',JSON.stringify({enc,created:Date.now()}));
-    document.getElementById('secret-text').value='';document.getElementById('secret-pass').value='';
-    document.getElementById('secret-output').textContent='Secret saved. Share the password with Shalani to open it.';
-  });
-  document.getElementById('open-secret').addEventListener('click',()=>{
-    const stored = JSON.parse(localStorage.getItem(SITE_KEY+'secret')||'null');
-    if(!stored) return alert('No secret saved yet.');
-    const pass = prompt('Enter the password to open the secret:');
-    if(pass===null) return;
-    try{
-      const dec = decodeURIComponent(escape(atob(stored.enc)));
-      const msg = xorCrypt(dec,pass);
-      document.getElementById('secret-output').textContent = '🔒 Opened: ' + msg;
-    }catch(e){document.getElementById('secret-output').textContent='Wrong password or corrupted.'}
-  });
-
-  // Utilities
-  function fileToBase64(file){
-    return new Promise((res,rej)=>{
-      const r=new FileReader();r.onload=()=>res(r.result);r.onerror=reject;r.readAsDataURL(file);
-    })
-  }
-  function escapeHtml(s){return String(s).replace(/[&"'<>]/g, c=>({"&":"&amp;","\"":"&quot;","'":"&#39;","<":"&lt;",">":"&gt;"}[c]));}
-
-})();
+// Secret
+saveSecret.onclick=()=>{
+  if(!secretPass.value) return alert('Password required');
+  const obj={msg:secretText.value,pass:secretPass.value};
+  localStorage.setItem(KEY+'secret',JSON.stringify(obj));
+  secretText.value='';secretPass.value='';
+  secretOutput.textContent='Saved ✔';
+};
+openSecret.onclick=()=>{
+  const obj=JSON.parse(localStorage.getItem(KEY+'secret')||'null');
+  if(!obj) return alert('No secret saved');
+  const p=prompt('Enter password');
+  if(p===obj.pass) secretOutput.textContent=obj.msg; else alert('Wrong password');
+};
 </script></body>
 </html>
